@@ -531,4 +531,64 @@
     
 }
 
+/*设置压板定值*/
+-(void)F26
+{
+
+    NSLog(@"执行方法:%s",__func__);
+    
+    self.resultSet = nil;
+    self.resultSet = [[NSMutableDictionary alloc] init];
+    //设备名称 不解析
+    self.pos += 4;
+    
+    
+    
+    //回路序号
+    unsigned short loopNumber =*(unsigned short*)(self.userData + self.pos);
+    
+    [self.resultSet setValue:[NSNumber numberWithUnsignedChar:loopNumber]
+                      forKey:[self getKeyString:self.key++]];
+    self.pos+=2;
+    
+    //点号偏移
+    unsigned short pointOffset =*(unsigned short*)(self.userData + self.pos);
+    
+    [self.resultSet setValue:[NSNumber numberWithUnsignedChar:pointOffset]
+                      forKey:[self getKeyString:self.key++]];
+    self.pos+=2;
+    
+    //点号个数
+    unsigned short pointCount =*(unsigned short*)(self.userData + self.pos);
+    [self.resultSet setValue:[NSNumber numberWithUnsignedChar:pointCount]
+                      forKey:[self getKeyString:self.key++]];
+    self.pos+=2;
+    
+    //压板值
+    
+    for(int i=0;i<pointCount;i++)
+    {
+        
+        Byte plateValue =*(Byte*)(self.userData + self.pos);
+        
+        switch (plateValue) {
+            case 0:
+                [self.resultSet setValue:@"压板无效" forKey:[self getKeyString:self.key++]];
+                break;
+            case 0x01:
+                [self.resultSet setValue:@"压板退出" forKey:[self getKeyString:self.key++]];
+                break;
+            case 0x81:
+                [self.resultSet setValue:@"压板投入" forKey:[self getKeyString:self.key++]];
+            default:
+                [self.resultSet setValue:@"压板定值出错" forKey:[self getKeyString:self.key++]];
+                break;
+        }
+        self.pos+=1;
+    
+    }
+}
+
+
+
 @end
