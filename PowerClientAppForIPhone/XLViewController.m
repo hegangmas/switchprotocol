@@ -184,10 +184,10 @@
 }
 
 -(void)response:(NSNotification*)notify{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        
-        NSDictionary* dcs = notify.userInfo;
-        
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        
+//        NSDictionary* dcs = notify.userInfo;
+//        
 //        NSInteger count = [[dcs valueForKey:@"1"] integerValue];
 //        
 //        NSLog(@"遥测个数:%d",count);
@@ -199,7 +199,7 @@
 //            NSLog(@"遥测值：%f",[[array objectAtIndex:0] floatValue]);
 //            NSLog(@"遥测描述:%@",[array objectAtIndex:1]);
 //        }
-    });
+//    });
 }
 
 - (void)didReceiveMemoryWarning
