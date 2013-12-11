@@ -338,6 +338,68 @@
     
 }
 
+/*读取无功事件*/
+-(void)F21
+{
+
+    NSLog(@"执行方法:%s",__func__);
+    
+    self.resultSet = nil;
+    self.resultSet = [[NSMutableDictionary alloc] init];
+    //设备名称 不解析
+    self.pos += 4;
+    
+    //事件个数
+    
+    
+    unsigned short count =*(unsigned short*)(self.userData + self.pos);
+    [self.resultSet setValue:[NSNumber numberWithUnsignedChar:count]
+                      forKey:[self getKeyString:self.key++]];
+    self.pos+=2;
+    
+    //读指针
+    unsigned short readPtr =*(unsigned short*)(self.userData + self.pos);
+    [self.resultSet setValue:[NSNumber numberWithUnsignedChar:readPtr]
+                      forKey:[self getKeyString:self.key++]];
+    self.pos+=2;
+    
+    //写指针
+    unsigned short writePtr =*(unsigned short*)(self.userData + self.pos);
+    [self.resultSet setValue:[NSNumber numberWithUnsignedChar:writePtr]
+                      forKey:[self getKeyString:self.key++]];
+    self.pos+=2;
+    
+    //缓冲区长度
+    unsigned short bufferLen =*(unsigned short*)(self.userData + self.pos);
+    [self.resultSet setValue:[NSNumber numberWithUnsignedChar:bufferLen]
+                      forKey:[self getKeyString:self.key++]];
+
+    self.pos+=2;
+    //无功事件内容 结构体  暂未使用到
+//    typedef struct{
+//        char name[GEN_NAME_LEN];
+//        WORD addr;
+//        WORD index;
+//        
+//        struct VCalClock  act_time; /*动作时间*/
+//        
+//        BYTE  type;          /*0-切除 1-投入 2-闭锁 3－解锁*/
+//        
+//        BYTE  flag;          //闭锁或解锁原因标志，对投切事件无效*/
+//        
+//        /*以下仅对投切事件有效*/
+//        BYTE  branch_no;     /*补偿装置支路号*/
+//        BYTE  cap_no;        /*电容器组号*/
+//        BYTE  group_before;  /*投入前组数*/
+//        BYTE  group_after;
+//        WORD  caps_before;   /*各电容器状态*/
+//        WORD  caps_after;
+//        VQcCastYc yc;
+//    }VQcEventInfo;
+}
+
+
+
 
 /*读取历史遥测*/
 -(void)F16
@@ -1082,8 +1144,6 @@
     [self.resultSet setValue:[NSNumber numberWithUnsignedChar:count]
                       forKey:[self getKeyString:self.key++]];
     
-    
-    
     //读指针  不保存
     self.pos+=2;
     unsigned short readPtr = *(unsigned short*)(self.userData + self.pos);
@@ -1111,10 +1171,14 @@
     switch(eventType)
     {
         case 0://动作事件
-        case 1:
-        case 2:
-            [self.resultSet setValue:[NSNumber numberWithUnsignedChar:eventType]
-                              forKey:[self getKeyString:self.key++]];
+            [self.resultSet setValue:@"动作事件" forKey:[self getKeyString:self.key++]];
+        case 1://操作事件
+            [self.resultSet setValue:@"操作事件" forKey:[self getKeyString:self.key++]];
+        case 2://告警事件
+            [self.resultSet setValue:@"告警事件" forKey:[self getKeyString:self.key++]];
+            
+//            [self.resultSet setValue:[NSNumber numberWithUnsignedChar:eventType]
+//                              forKey:[self getKeyString:self.key++]];
             break;
         default:
             NSLog(@"事件类型错误");
