@@ -628,19 +628,6 @@
 }
 
 
-/*读取遥测浮点型*/
--(void)F1F
-{
-    //与解析遥测一次值类似
-    //单位6个字节
-}
-
-
-/*读取装置列表*/
--(void)F29
-{
-    //暂时不解析
-}
 
 /*读取压板定值解析*/
 -(void)F25
@@ -1174,6 +1161,76 @@
         [array addObject:desc];
         
         [self.resultSet setValue:desc forKey:[self getKeyString:self.key++]];
+    }
+}
+
+
+
+/*读取遥测浮点型*/
+-(void)F1F
+{
+    //与解析遥测一次值类似
+    //单位6个字节
+}
+
+
+/*读取装置列表*/
+-(void)F29
+{
+    NSLog(@"执行方法:%s",__func__);
+    
+    self.resultSet = nil;
+    self.resultSet = [[NSMutableDictionary alloc] init];
+    //设备名称 不解析
+    self.pos += 4;
+    
+    
+    //装置个数
+    unsigned short deviceCount =*(unsigned short*)(self.userData + self.pos);
+    [self.resultSet setValue:[NSNumber numberWithUnsignedChar:deviceCount]
+                      forKey:[self getKeyString:self.key++]];
+    self.pos+=2;
+    
+    
+    
+    //读指针
+    
+    unsigned short readPtr=*(unsigned short*)(self.userData + self.pos);
+    [self.resultSet setValue:[NSNumber numberWithUnsignedChar:readPtr]
+                      forKey:[self getKeyString:self.key++]];
+    self.pos+=2;
+    
+    
+    //写指针
+    unsigned short writePtr=*(unsigned short*)(self.userData + self.pos);
+    [self.resultSet setValue:[NSNumber numberWithUnsignedChar:writePtr]
+                      forKey:[self getKeyString:self.key++]];
+    self.pos+=2;
+    
+    
+    
+    //装置总个数
+    unsigned short totalCount =*(unsigned short*)(self.userData + self.pos);
+    [self.resultSet setValue:[NSNumber numberWithUnsignedChar:totalCount]
+                      forKey:[self getKeyString:self.key++]];
+    self.pos+=2;
+    
+    
+    for(int i =0;i<deviceCount;i++)
+    {
+        //装置地址 1个字节
+        
+        Byte address =*(Byte*)(self.userData + self.pos);
+        [self.resultSet setValue:[NSNumber numberWithUnsignedChar:address]
+                          forKey:[self getKeyString:self.key++]];
+        self.pos+=1;
+        
+        
+        //装置DWNAME  4个字节
+        unsigned int deviceName =*(unsigned int*)(self.userData + self.pos);
+        [self.resultSet setValue:[NSNumber numberWithUnsignedChar:deviceName]
+                          forKey:[self getKeyString:self.key++]];
+        self.pos+=4;
     }
 }
 
