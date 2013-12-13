@@ -238,4 +238,50 @@ type;    //读取遥测一次值与二次值
 -(NSData*)readFileStatusWithFileName:(NSString*)fileName
                             withType:(int)type;//读取文件状态、删除文件和删除目录
 
+
+
+
+
+
+//增加规约组帧信息
+//读取压板状态
+-(NSData*)readPlateStatusWithEquipName:(unsigned int)equipName
+                       withPlateOffset:(unsigned short)plateOffset
+                        withPlateCount:(unsigned short)plateCount;
+
+//读双点遥信
+-(void)readDoubleTelesignalWithEquipName:(unsigned int)equipName
+                    withTelesignalOffset:(unsigned short)telesignalOffset
+                     withTelesignalCount:(unsigned short)telesignalCount;
+
+
+//读取压板定值
+-(NSData*)readPlateValueWithEquipName:(unsigned int)equipName
+                       withLoopNumber:(unsigned short)loopNumber
+                      withPointOffset:(unsigned short)pointOffset
+                       withPointCount:(unsigned short)pointCount;
+
+
+//读装装置列表
+-(NSData*)readDeviceListWithEquipName:(unsigned int)equipName
+                      withDeviceCount:(unsigned short)deviceCount
+                          withReadPtr:(unsigned short)readPtr
+                         withWritePtr:(unsigned short)writePtr
+                        withBufferLen:(unsigned short)bufferLen;
+
+//读取遥测极值
+-(NSData*)readTelemeterExtremumValueWithEquipName:(unsigned int)equipName
+                                  withPointNumber:(unsigned short)pointNumber
+                                    withStartTime:(unsigned int)startTime
+                                wihtFrozenDensity:(unsigned short)frozenDensity
+                                        withCount:(unsigned short)count;
+
+
+//读取双点soe事件
+-(void)readDoubleSoeWithEquipName:(unsigned int)equipName
+                     withSoeCount:(unsigned short)soeCount
+                      withReadPtr:(unsigned short)readPtr
+                     withWritePtr:(unsigned short)writePtr
+                    withBufferLen:(unsigned short)bufferLen;
+
 @end

@@ -192,7 +192,197 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(XLSwitchPackFrame)  //实现组帧单例
     return data;
 }
 
+/*－－－－－－－－－－－－－－
+ 功能：读取压板定值
+ 参数：
+ 返回值：
+ －－－－－－－－－－－－－－*/
+-(NSData*)readPlateValueWithEquipName:(unsigned int)equipName
+                   withLoopNumber:(unsigned short)loopNumber
+                    withPointOffset:(unsigned short)pointOffset
+                   withPointCount:(unsigned short)pointCount
+{
 
+    
+    //读取压板状态
+    
+    self.pos=0;  //偏移初始化为0
+    unsigned short checksum=0;//校验和
+    //组报文头
+    unsigned short userDataLen=3+4+6;  //
+    length =userDataLen+9;
+    
+    
+    [self packHeader];
+    frame[self.pos++] = 0xc;
+    
+    //功能码
+    frame[self.pos++]= 0x1a;
+    
+    
+    
+    //设备名称 4个字节
+    frame[self.pos++]= (Byte)(equipName&0x000000ff);
+    frame[self.pos++]= (Byte)((equipName&0x0000ff00)>>8);
+    frame[self.pos++]= (Byte)((equipName&0x00ff0000)>>16);
+    frame[self.pos++]=  (Byte)((equipName&0xff000000)>>24);
+
+    
+    //回路序号 2个字节
+    frame[self.pos++]= (Byte)(loopNumber&0x000000ff);
+    frame[self.pos++]= (Byte)((loopNumber&0x0000ff00)>>8);
+    
+    //点号偏移
+    frame[self.pos++]= (Byte)(pointOffset&0x000000ff);
+    frame[self.pos++]= (Byte)((pointOffset&0x0000ff00)>>8);
+    
+    //点号个数
+    frame[self.pos++]= (Byte)(pointCount&0x000000ff);
+    frame[self.pos++]= (Byte)((pointCount&0x0000ff00)>>8);
+    
+    //设置校验和
+    checksum=[self setCheckSum:frame+6];
+    frame[self.pos++]=(Byte)(checksum&0x00ff);
+    frame[self.pos++]=(Byte)((checksum&0xff00)>>8);
+    
+    NSData *data =[NSData dataWithBytes:frame
+                                 length:length];
+    free(frame);
+    return data;
+}
+
+/*－－－－－－－－－－－－－－
+ 功能：读取装置列表
+ 参数：
+ 返回值：
+ －－－－－－－－－－－－－－*/
+-(NSData*)readDeviceListWithEquipName:(unsigned int)equipName
+                   withDeviceCount:(unsigned short)deviceCount
+                       withReadPtr:(unsigned short)readPtr
+                      withWritePtr:(unsigned short)writePtr
+                     withBufferLen:(unsigned short)bufferLen
+{
+    //读取装置列表
+    
+    self.pos=0;  //偏移初始化为0
+    unsigned short checksum=0;//校验和
+    //组报文头
+    unsigned short userDataLen=3+4+2+6;  //
+    length =userDataLen+9;
+    
+    
+    [self packHeader];
+    frame[self.pos++] = 0xc;
+    
+    //功能码
+    frame[self.pos++]= 0x29;
+    
+    
+    
+    //设备名称 4个字节
+    frame[self.pos++]= (Byte)(equipName&0x000000ff);
+    frame[self.pos++]= (Byte)((equipName&0x0000ff00)>>8);
+    frame[self.pos++]= (Byte)((equipName&0x00ff0000)>>16);
+    frame[self.pos++]=  (Byte)((equipName&0xff000000)>>24);
+    
+    //装置个数  2个字节
+    frame[self.pos++]= (Byte)(deviceCount&0x000000ff);
+    frame[self.pos++]= (Byte)((deviceCount&0x0000ff00)>>8);
+    
+    //读指针
+    frame[self.pos++]= (Byte)(readPtr&0x000000ff);
+    frame[self.pos++]= (Byte)((readPtr&0x0000ff00)>>8);
+    
+    //写指针
+    frame[self.pos++]= (Byte)(writePtr&0x000000ff);
+    frame[self.pos++]= (Byte)((writePtr&0x0000ff00)>>8);
+    
+    //缓冲区长度 2个字节
+    frame[self.pos++]= (Byte)(bufferLen&0x000000ff);
+    frame[self.pos++]= (Byte)((bufferLen&0x0000ff00)>>8);
+    
+    
+    //设置校验和
+    checksum=[self setCheckSum:frame+6];
+    frame[self.pos++]=(Byte)(checksum&0x00ff);
+    frame[self.pos++]=(Byte)((checksum&0xff00)>>8);
+    
+    NSData *data =[NSData dataWithBytes:frame
+                                 length:length];
+    free(frame);
+    return data;
+    
+    
+}
+
+/*－－－－－－－－－－－－－－
+ 功能：读取遥测极值
+ 参数：
+ 返回值：
+ －－－－－－－－－－－－－－*/
+-(NSData*)readTelemeterExtremumValueWithEquipName:(unsigned int)equipName
+                               withPointNumber:(unsigned short)pointNumber
+                                 withStartTime:(unsigned int)startTime
+                             wihtFrozenDensity:(unsigned short)frozenDensity
+                                     withCount:(unsigned short)count
+{
+    
+    //读取遥测极值
+    
+    self.pos=0;  //偏移初始化为0
+    unsigned short checksum=0;//校验和
+    //组报文头
+    unsigned short userDataLen=3+4+2+4+2+2;  //
+    length =userDataLen+9;
+    
+    
+    [self packHeader];
+    frame[self.pos++] = 0xc;
+    
+    //功能码
+    frame[self.pos++]= 0x1e;
+    
+    //设备名称 4个字节
+    frame[self.pos++]= (Byte)(equipName&0x000000ff);
+    frame[self.pos++]= (Byte)((equipName&0x0000ff00)>>8);
+    frame[self.pos++]= (Byte)((equipName&0x00ff0000)>>16);
+    frame[self.pos++]=  (Byte)((equipName&0xff000000)>>24);
+    
+    
+    
+    //点号   2个字节
+    frame[self.pos++]= (Byte)(equipName&0x000000ff);
+    frame[self.pos++]= (Byte)((equipName&0x0000ff00)>>8);
+    
+    
+    
+    //起始时间  4个字节
+    frame[self.pos++]= (Byte)(startTime&0x000000ff);
+    frame[self.pos++]= (Byte)((startTime&0x0000ff00)>>8);
+    frame[self.pos++]= (Byte)((startTime&0x00ff0000)>>16);
+    frame[self.pos++]=  (Byte)((startTime&0xff000000)>>24);
+    
+    
+    //数据冻结密度 2个字节
+    frame[self.pos++]= (Byte)(frozenDensity&0x000000ff);
+    frame[self.pos++]= (Byte)((frozenDensity&0x0000ff00)>>8);
+    
+    
+    //个数
+    frame[self.pos++]= (Byte)(count&0x000000ff);
+    frame[self.pos++]= (Byte)((count&0x0000ff00)>>8);
+    
+    //设置校验和
+    checksum=[self setCheckSum:frame+6];
+    frame[self.pos++]=(Byte)(checksum&0x00ff);
+    frame[self.pos++]=(Byte)((checksum&0xff00)>>8);
+    
+    NSData *data =[NSData dataWithBytes:frame
+                                 length:length];
+    free(frame);
+    return data;
+    
+}
 /*－－－－－－－－－－－－－－
  功能：读取双点soe
  参数：
